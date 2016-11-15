@@ -3,11 +3,13 @@
  * @author Bighead
  */
 import Player from '../src/index.js';
+import playlist from '../src/extensions/playlist.js';
 
-window.Player = Player;
 
 
-let a = new Player();
+Player.use(playlist);
+
+let player = new Player();
 let func = {
     play() {
         console.log('play');
@@ -16,9 +18,10 @@ let func = {
         console.log('pause');
     }
 };
-a.on('play', func.play);
-a.on('pause', func.pause);
-a.src('http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3');
-a.play();
+player.on('play', func.play);
+player.on('pause', func.pause);
+player.play();
 
-window.a = a;
+window.player = player;
+
+window.Player = Player;

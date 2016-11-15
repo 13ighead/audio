@@ -5,9 +5,11 @@
 
 import defaultConfig from './config.js';
 import debug from './debug.js';
+import {mixin} from './util.js';
 
 module.exports = class Player {
     constructor(options) {
+
         this._config = Object.assign({}, defaultConfig, options);
         this._instance = new Audio();
         this._eventHandler = {};
@@ -26,28 +28,51 @@ module.exports = class Player {
                 });
             });
         });
+
     }
 
-    src(url) {
-        if (url) {
-            if (url === this._instance.src) {
-                debug.warn(`The url is same as current url. [${url}]`);
-            }
-            else {
-                this._instance.src = url;
-            }
-            return url;
+    _play() {
+        const url = this._source.url;
+        if (!url) {
+            debug.log(`The url is empty.`);
         }
-
-        return this._instance.src;
+        else {
+            console.log(this._source);
+            this._instance.src = url;
+            this._instance.play();
+        }
     }
 
     play() {
-        this._instance.play();
+        this._play();
     }
 
     pause() {
         this._instance.pause();
+    }
+
+    currentSource(source) {
+        if (source !== undefined) {
+            if (source.url === undefined || source.url.length <= 0) {
+                debug.warn(`The url is empty.`);
+            }
+            else {
+                this._source = source;
+            }
+            return this;
+        }
+
+        return this._source;
+    }
+
+    currentTime(time) {
+        if (time !== undefined) {
+            this._instance.currentTime = time;
+
+            return this;
+        }
+
+        return this._instance.currentTime;
     }
 
     on(eventType, callback) {
@@ -112,4 +137,15 @@ module.exports = class Player {
             }
         }
     }
-}
+
+    static use(extensions) {
+        if (Array.isArray(extensions)) {
+            for (let item of extensions) {
+                mixin(item)(this.prototype);
+            }
+        }
+        else {
+            mixin(extensions)(this.prototype);
+        }
+    }
+};
