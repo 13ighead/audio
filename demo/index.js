@@ -16,7 +16,7 @@ let func = {
         console.log('pause');
     }
 };
-window.list  = [{
+const list  = [{
     url: 'http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3',
     title: 'title1',
     subTitle: 'subTitle1',
@@ -35,9 +35,26 @@ window.list  = [{
     cover: 'http://fdfs.xmcdn.com/group16/M06/E9/21/wKgDbFaeMPKRrB8uAAID3jR0-Lk065_mobile_large.jpg'
 }];
 
+const events = [
+    'ready',
+    'progress',
+    'loadstart',
+    'canplay',
+    'waiting',
+    'play',
+    'pause',
+    'playing',
+    'ended',
+    'timeupdate',
+    'error'
+];
+const p = document.querySelector('p');
 
-player.on('play', func.play);
-player.on('pause', func.pause);
+player.on('timeupdate', function (event) {
+    p.innerHTML = this.currentTime();
+});
+
+player.addList(list);
 player.play();
 
 window.player = player;

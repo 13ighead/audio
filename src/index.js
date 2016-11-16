@@ -24,7 +24,7 @@ module.exports = class Player {
                     if (typeof handler.fn !== 'function') {
                         return;
                     }
-                    handler.fn(e);
+                    handler.fn.apply(this, e);
                 });
             });
         });
@@ -37,9 +37,11 @@ module.exports = class Player {
         if (!url) {
             debug.log(`The url must not be empty.`);
         }
-        else {
-            console.log(this._source);
+        else if (this._instance.src !== url) {
             this._instance.src = url;
+            this._instance.play();
+        }
+        else {
             this._instance.play();
         }
     }
