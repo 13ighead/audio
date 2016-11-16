@@ -78,6 +78,10 @@ module.exports = class Player {
         return this._instance.currentTime;
     }
 
+    durationTime() {
+        return this._instance.duration;
+    }
+
     on(eventType, callback) {
         if (!eventType) {
             debug.warn(`The eventType must not be empty.`);

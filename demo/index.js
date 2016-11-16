@@ -48,14 +48,27 @@ const events = [
     'timeupdate',
     'error'
 ];
-const p = document.querySelector('p');
+const span = document.querySelectorAll('span');
+const img = document.querySelector('img');
+
+player.on('play', function () {
+    span[0].innerHTML = this.currentSource().title;
+    span[1].innerHTML = this.currentSource().subTitle;
+    img.src = this.currentSource().cover;
+});
+
+const formatTime = time => {
+    time = Math.floor(time);
+    return `${Math.floor(time / 60)}:${Math.floor(time % 60)}`;
+};
 
 player.on('timeupdate', function (event) {
-    p.innerHTML = this.currentTime();
+    span[2].innerHTML = formatTime(this.currentTime());
+    span[3].innerHTML = formatTime(this.durationTime());
 });
 
 player.addList(list);
-player.play();
+// player.play();
 
 window.player = player;
 window.Player = Player;
