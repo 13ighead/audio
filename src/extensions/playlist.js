@@ -5,48 +5,112 @@
 
 import debug from '../debug.js';
 
+const MODE = [
+    'no_repeat',
+    'repeat_all',
+    'repeat_one',
+    'single',
+    'random'
+];
+
 export default {
-    playlist: {
+    _playlist: {
         index: 0,
-        list: [{
-            url: 'http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3',
-            title: 'title1',
-            subTitle: 'subTitle1',
-            cover: 'http://fdfs.xmcdn.com/group16/M06/E9/21/wKgDbFaeMPKRrB8uAAID3jR0-Lk065_mobile_large.jpg'
-        },
-        {
-            url: 'http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3',
-            title: 'title2',
-            subTitle: 'subTitle2',
-            cover: 'http://fdfs.xmcdn.com/group16/M06/E9/21/wKgDbFaeMPKRrB8uAAID3jR0-Lk065_mobile_large.jpg'
-        },
-        {
-            url: 'http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3',
-            title: 'title3',
-            subTitle: 'subTitle3',
-            cover: 'http://fdfs.xmcdn.com/group16/M06/E9/21/wKgDbFaeMPKRrB8uAAID3jR0-Lk065_mobile_large.jpg'
-        }]
+        list: []
+    },
+
+    _playmode: MODE[0],
+
+    playmode(mode) {
+
+        if (mode !== undefined) {
+            if (MODE.indexOf(mode) === -1) {
+                debug.warn(`The mode is not supported yet. [${mode}]`);
+            }
+            else {
+                this._playmode = mode;
+            }
+
+            return this;
+        }
+
+        return this._playmode;
     },
 
     prev() {
         debug.log('prev');
-        if (--this.playlist.index < 0) {
-            this.playlist.index = this.playlist.list.length - 1;
+        const playmode = this._playmode;
+        switch (playmode) {
+            case MODE[4]:
+                this._playlist.index = Math.floor(Math.random() * this._playlist.list.length);
+                break;
+            default:
+                if (--this._playlist.index < 0) {
+                    this._playlist.index = this._playlist.list.length - 1;
+                }
+                break;
         }
+
         this.play();
     },
 
     next() {
         debug.log('next');
-        if (++this.playlist.index >= this.playlist.list.length) {
-            this.playlist.index = 0;
+        const playmode = this._playmode;
+        switch (playmode) {
+            case MODE[4]:
+                this._playlist.index = Math.floor(Math.random() * this._playlist.list.length);
+                break;
+            default:
+                if (++this._playlist.index >= this._playlist.list.length) {
+                    this._playlist.index = 0;
+                }
+                break;
         }
+
         this.play();
     },
 
     play() {
-        console.log(this.playlist.index);
-        this.currentSource(this.playlist.list[this.playlist.index]);
+        this.currentSource(this._playlist.list[this._playlist.index]);
         this._play();
+    },
+
+    addList(sources, index) {
+        if (sources === undefined) {
+            debug.warn(`The source must not be empty.`);
+            return;
+        }
+
+        if (!Array.isArray(sources)) {
+            sources = [sources];
+        }
+
+        let tmp = [];
+
+        for (let source of sources) {
+            if (source.url === undefined) {
+                debug.warn(`The url must not be empty.`);
+                continue;
+            }
+
+            tmp.push(source);
+        }
+
+        if (index) {
+            let last = this._playlist.list.splice(index, this._playlist.list.length - index);
+            this._playlist.list = this._playlist.list.concat(sources, last);
+        }
+        else {
+            this._playlist.list = this._playlist.list.concat(sources);
+        }
+    },
+
+    removeList(index, length) {
+        return this._playlist.list.splice(index, length);
+    },
+
+    getList(index = 0, length = 0) {
+        return this._playlist.list.slice(index, index + length);
     }
 };

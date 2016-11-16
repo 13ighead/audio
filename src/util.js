@@ -14,7 +14,8 @@ export function mixin(behaviour) {
     function mixin(target) {
         for (let property of instanceKeys) {
             Object.defineProperty(target, property, {
-                value: behaviour[property]
+                value: behaviour[property],
+                writable: true
             });
         }
 

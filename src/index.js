@@ -29,12 +29,13 @@ module.exports = class Player {
             });
         });
 
+        this._source = {};
     }
 
     _play() {
         const url = this._source.url;
         if (!url) {
-            debug.log(`The url is empty.`);
+            debug.log(`The url must not be empty.`);
         }
         else {
             console.log(this._source);
@@ -54,7 +55,7 @@ module.exports = class Player {
     currentSource(source) {
         if (source !== undefined) {
             if (source.url === undefined || source.url.length <= 0) {
-                debug.warn(`The url is empty.`);
+                debug.warn(`The url must not be empty.`);
             }
             else {
                 this._source = source;
