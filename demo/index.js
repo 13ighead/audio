@@ -3,9 +3,6 @@
  * @author Bighead
  */
 import Player from '../src/index.js';
-import playlist from '../src/extensions/playlist.js';
-
-Player.use(playlist);
 
 let player = new Player();
 let func = {
@@ -16,6 +13,7 @@ let func = {
         console.log('pause');
     }
 };
+
 const list  = [{
     url: 'http://fdfs.xmcdn.com/group13/M00/F1/49/wKgDXVak1c7y2Fj2AJ9UCoThL50588.mp3',
     title: 'title1',
@@ -67,8 +65,6 @@ player.on('timeupdate', function (event) {
     span[3].innerHTML = formatTime(this.durationTime());
 });
 
-player.addList(list);
-// player.play();
 
 window.player = player;
 window.Player = Player;

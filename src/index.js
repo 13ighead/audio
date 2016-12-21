@@ -5,7 +5,6 @@
 
 import defaultConfig from './config.js';
 import debug from './debug.js';
-import {mixin} from './util.js';
 
 module.exports = class Player {
     constructor(options) {
@@ -142,17 +141,6 @@ module.exports = class Player {
                 list.splice(index, 1);
                 break;
             }
-        }
-    }
-
-    static use(extensions) {
-        if (Array.isArray(extensions)) {
-            for (let item of extensions) {
-                mixin(item)(this.prototype);
-            }
-        }
-        else {
-            mixin(extensions)(this.prototype);
         }
     }
 };
